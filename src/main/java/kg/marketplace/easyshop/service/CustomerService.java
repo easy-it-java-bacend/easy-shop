@@ -1,12 +1,14 @@
 package kg.marketplace.easyshop.service;
 
-import exceptions.CustomerNotFoundException;
-import exceptions.CustomerSaveException;
+import kg.marketplace.easyshop.exceptions.CustomerNotFoundException;
+import kg.marketplace.easyshop.exceptions.CustomerSaveException;
 import kg.marketplace.easyshop.dao.CustomerRepository;
 import kg.marketplace.easyshop.entity.Customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,12 @@ public class CustomerService {
     }
 
     public Customer getOneCustomerById(Long id) {
-        return customerRepository.getById(id);
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException("For id : " + id));
     }
+
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
+    }
+
 }

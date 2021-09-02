@@ -23,6 +23,6 @@ public class Order {
     private Double totalSum;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "orders")
+    @JoinColumn(name = "product")
     private Product product;
 }
