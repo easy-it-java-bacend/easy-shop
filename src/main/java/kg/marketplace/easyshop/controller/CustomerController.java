@@ -4,10 +4,12 @@ import kg.marketplace.easyshop.dao.CustomerRepository;
 import kg.marketplace.easyshop.entity.Basket;
 import kg.marketplace.easyshop.entity.Customer;
 import kg.marketplace.easyshop.entity.Sex;
+import kg.marketplace.easyshop.service.CustomerService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Date;
@@ -18,7 +20,7 @@ import java.util.Date;
 public class CustomerController {
 
     @Autowired
-    private final CustomerRepository customerRepository;
+    private final CustomerService customerService;
 
     @RequestMapping("/save")
     public void save() {
@@ -31,14 +33,11 @@ public class CustomerController {
         customer.setSex(Sex.MALE);
         customer.setBasket(new Basket());
 
-        customerRepository.save(customer);
+        customerService.save(customer);
     }
 
-    @RequestMapping("/print")
-    public void print() {
-        for (Customer customer : customerRepository.findAll()) {
-            System.out.println(customer);
-        }
+    @RequestMapping("/print/{id}")
+    public void print(@PathVariable Long id) {
+        System.out.println(customerService.getOneCustomerById(id));
     }
-
 }

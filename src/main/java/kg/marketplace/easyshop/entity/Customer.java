@@ -35,4 +35,22 @@ public class Customer {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "customer")
     private Basket basket;
+
+    @Override
+    public String toString() {
+        String json = String.format("" +
+                "\"id\" : %d%n" +
+                "\"firstName\" : \"%s\"%n" +
+                "\"lastName\" : \"%s\"%n" +
+                "\"email\" : \"%s\"%n" +
+                "\"dob\" : %d%n" +
+                "\"sex\" : %d%n",
+                id,
+                firstName,
+                lastnName,
+                email,
+                dob.getTime(),
+                sex.ordinal());
+        return json;
+    }
 }

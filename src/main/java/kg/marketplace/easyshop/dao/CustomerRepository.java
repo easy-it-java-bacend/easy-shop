@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
@@ -15,5 +16,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Customer findCustomerByIdAndBasketIsNull(Long id);
     //Select 1 from tb_customers Where basket IS NULL;
+
+    Optional<Customer> getCustomerById(Long id);
 }
 
