@@ -2,6 +2,7 @@ package kg.marketplace.easyshop.controller;
 
 import kg.marketplace.easyshop.entity.Customer;
 import kg.marketplace.easyshop.enums.Status;
+import kg.marketplace.easyshop.service.CustomerService;
 import kg.marketplace.easyshop.service.impl.CustomerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,28 +15,28 @@ import java.util.List;
 @RequestMapping("/api/v1/customer")
 public class CustomerController {
 
-    private final CustomerServiceImpl customerServiceImpl;
+    private final CustomerService customerService;
 
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.OK)
     public Status save(@RequestBody Customer customer) {
-        customerServiceImpl.save(customer);
+        customerService.save(customer);
         return Status.SUCCESS;
     }
 
     @GetMapping("/get-one/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Customer getOne(@PathVariable Long id) {
-        return customerServiceImpl.getOneCustomerById(id);
+        return customerService.getOneCustomerById(id);
     }
 
     @GetMapping("/get-all")
     public List<Customer> getAll() {
-        return customerServiceImpl.getAllCustomers();
+        return customerService.getAllCustomers();
     }
 
     @DeleteMapping("/delete/{id}")
     public Status deleteOne(@PathVariable Long id) {
-        return customerServiceImpl.deleteOneById(id);
+        return customerService.deleteOneById(id);
     }
 }

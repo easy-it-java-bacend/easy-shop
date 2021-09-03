@@ -2,6 +2,7 @@ package kg.marketplace.easyshop.controller;
 
 import kg.marketplace.easyshop.entity.Order;
 import kg.marketplace.easyshop.enums.Status;
+import kg.marketplace.easyshop.service.OrderService;
 import kg.marketplace.easyshop.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,29 +14,29 @@ import java.util.List;
 @RequestMapping("/api/v1/order")
 @RequiredArgsConstructor
 public class OrderController {
-    private final OrderServiceImpl orderServiceImpl;
+    private final OrderService orderService;
 
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.OK)
     public Status save(@RequestBody Order order){
-        orderServiceImpl.saveOrder(order);
+        orderService.saveOrder(order);
         return Status.SUCCESS;
     }
 
     @GetMapping("/get-one-order/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Order getOneOrder(@PathVariable Long id){
-        return orderServiceImpl.getOneOrderById(id);
+        return orderService.getOneOrderById(id);
     }
 
 
     @GetMapping("/get-all-orders")
     public List<Order> getAll(){
-        return orderServiceImpl.getAllOrders();
+        return orderService.getAllOrders();
     }
 
     @DeleteMapping("/delete-order/{id}")
     public Status deleteOneOrder(@PathVariable Long id){
-        return orderServiceImpl.deleteOrderById(id);
+        return orderService.deleteOrderById(id);
     }
 }
