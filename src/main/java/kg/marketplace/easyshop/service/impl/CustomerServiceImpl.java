@@ -26,7 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         int age = (int) ((customer.getDob().getTime()) / 365.25 - 1970);
         if (age < 18) {
-            throw new CustomerSaveException("Customer is not adult enought");
+            throw new CustomerSaveException("Customer is not adult enough");
         }
         customerRepository.save(customer);
     }
