@@ -1,10 +1,12 @@
 package kg.marketplace.easyshop.service.impl;
 
+import kg.marketplace.easyshop.dto.CustomerDTO;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.exceptions.CustomerNotFoundException;
 import kg.marketplace.easyshop.exceptions.CustomerSaveException;
 import kg.marketplace.easyshop.dao.CustomerRepository;
 import kg.marketplace.easyshop.entity.Customer;
+import kg.marketplace.easyshop.mapper.CustomerMapper;
 import kg.marketplace.easyshop.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,17 +19,18 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
 
-    public void save(Customer customer) {
-        if (customer.getEmail().isEmpty()) {
+    public void save(CustomerDTO customerDTO) {
+        if (customerDTO.getEmail().isEmpty()) {
             throw new CustomerSaveException("Empty required email field");
         }
-        if (customer.getDob() == null) {
+        if (customerDTO.getDob() == null) {
             throw new CustomerSaveException("Empty required dob field");
         }
-        int age = (int) ((customer.getDob().getTime()) / 365.25 - 1970);
+        int age = (int) ((customerDTO.getDob().getTime()) / 365.25 - 1970);
         if (age < 18) {
             throw new CustomerSaveException("Customer is not adult enought");
         }
+        Customer customer = CustomerMapper.INSTANCE.toEntity(customerDTO);
         customerRepository.save(customer);
     }
 
