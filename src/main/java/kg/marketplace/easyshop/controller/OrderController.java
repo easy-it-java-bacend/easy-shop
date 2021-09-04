@@ -16,14 +16,14 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    @PostMapping("/save")
+    @PostMapping("/save-order")
     @ResponseStatus(HttpStatus.OK)
     public Status save(@RequestBody Order order){
         orderService.saveOrder(order);
         return Status.SUCCESS;
     }
 
-    @GetMapping("/get-one-order/{id}")
+    @GetMapping("/get-order-by-id/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Order getOneOrder(@PathVariable Long id){
         return orderService.getOneOrderById(id);
