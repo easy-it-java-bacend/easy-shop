@@ -1,10 +1,12 @@
 package kg.marketplace.easyshop.service.impl;
 
 import kg.marketplace.easyshop.dao.OrderRepository;
+import kg.marketplace.easyshop.dto.OrderDTO;
 import kg.marketplace.easyshop.entity.Order;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.exceptions.OrderNotFoundException;
 import kg.marketplace.easyshop.exceptions.OrderSaveException;
+import kg.marketplace.easyshop.mapper.OrderMapper;
 import kg.marketplace.easyshop.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,16 +29,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void saveOrder(Order order) {
-        if(order.getProduct()==null){
+    public void saveOrder(OrderDTO orderDTO) {
+        if(orderDTO.getProduct()==null){
             throw new OrderSaveException("Order must contain at least 1 product!");
         }
-        if (order.getQuantity()<=0){
+        if (orderDTO.getQuantity()<=0){
             throw new OrderSaveException("Order must contain at least 1 product!");
         }
-        if (order.getTotalSum()<=0){
+        if (orderDTO.getTotalSum()<=0){
             throw new OrderSaveException("Can not count total sum!");
         }
+        Order order = OrderMapper.INSTANCE.toEntity(orderDTO);
+        orderRepository.save(order);
     }
 
     @Override

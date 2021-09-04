@@ -1,9 +1,9 @@
 package kg.marketplace.easyshop.controller;
 
+import kg.marketplace.easyshop.dto.OrderDTO;
 import kg.marketplace.easyshop.entity.Order;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.service.OrderService;
-import kg.marketplace.easyshop.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ public class OrderController {
 
     @PostMapping("/save-order")
     @ResponseStatus(HttpStatus.OK)
-    public Status save(@RequestBody Order order){
+    public Status save(@RequestBody OrderDTO order){
         orderService.saveOrder(order);
         return Status.SUCCESS;
     }
