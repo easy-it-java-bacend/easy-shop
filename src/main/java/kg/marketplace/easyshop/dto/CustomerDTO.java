@@ -1,7 +1,7 @@
 package kg.marketplace.easyshop.dto;
 
 import kg.marketplace.easyshop.entity.Basket;
-import kg.marketplace.easyshop.entity.Sex;
+import kg.marketplace.easyshop.enums.Sex;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

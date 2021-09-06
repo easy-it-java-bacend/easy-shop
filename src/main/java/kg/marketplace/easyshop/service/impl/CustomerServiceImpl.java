@@ -28,7 +28,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         int age = (int) ((customerDTO.getDob().getTime()) / 365.25 - 1970);
         if (age < 18) {
-            throw new CustomerSaveException("Customer is not adult enought");
+            throw new CustomerSaveException("Customer is not adult enough");
         }
         Customer customer = CustomerMapper.INSTANCE.toEntity(customerDTO);
         customerRepository.save(customer);

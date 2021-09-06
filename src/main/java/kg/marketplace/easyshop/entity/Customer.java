@@ -1,5 +1,6 @@
 package kg.marketplace.easyshop.entity;
 
+import kg.marketplace.easyshop.enums.Sex;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
