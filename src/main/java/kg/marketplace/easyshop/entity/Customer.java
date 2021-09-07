@@ -1,10 +1,12 @@
 package kg.marketplace.easyshop.entity;
 
+import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_customers")
@@ -32,7 +34,7 @@ public class Customer {
     @Column
     private Sex sex;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "basket")
-    private Basket basket;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "orders")
+    private List<Order> orders;
 }
