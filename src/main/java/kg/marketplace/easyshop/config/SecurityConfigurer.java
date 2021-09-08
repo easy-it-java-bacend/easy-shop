@@ -1,5 +1,6 @@
 package kg.marketplace.easyshop.config;
 
+import kg.marketplace.easyshop.enums.Role;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +16,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         UserBuilder users = User.withDefaultPasswordEncoder();
 
         auth.inMemoryAuthentication()
-                .withUser(users.username("john").password("test").roles("CUSTOMER"));
+                .withUser(users.username("john").password("test").roles(Role.CUSTOMER.toString()))
+                .withUser(users.username("jack").password("4321").roles(Role.ADMIN.toString()));
+
     }
 }

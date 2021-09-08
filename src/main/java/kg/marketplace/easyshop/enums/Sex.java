@@ -1,4 +1,4 @@
-package kg.marketplace.easyshop.entity;
+package kg.marketplace.easyshop.enums;
 
 public enum Sex {
     MALE,
