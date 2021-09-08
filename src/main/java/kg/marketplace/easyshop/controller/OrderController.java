@@ -14,29 +14,23 @@ import java.util.List;
 @RequestMapping("/api/v1/order")
 @RequiredArgsConstructor
 public class OrderController {
+
     private final OrderService orderService;
 
-    @PostMapping("/save-order")
-    @ResponseStatus(HttpStatus.OK)
-    public Status save(@RequestBody OrderDTO order){
-        orderService.saveOrder(order);
+    @PostMapping("/make-order")
+    public Status makeOrder(@RequestBody OrderDTO orderDTO) {
+        orderService.makeOrder(orderDTO);
         return Status.SUCCESS;
     }
 
-    @GetMapping("/get-order-by-id/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Order getOneOrder(@PathVariable Long id){
-        return orderService.getOneOrderById(id);
+    @GetMapping("/get-all-less-than")
+    public List<OrderDTO> getAllOrdesLessThan(@RequestParam(defaultValue = "0") Double limit) {
+        return orderService.getOrdersLessThan(limit);
     }
 
-
-    @GetMapping("/get-all-orders")
-    public List<Order> getAll(){
-        return orderService.getAllOrders();
+    @GetMapping("/get-all-between")
+    public List<OrderDTO> getAllOrdersBetween(@RequestParam Double floor, @RequestParam Double ceil) {
+        return orderService.getOrdersLessThan(floor);
     }
 
-    @DeleteMapping("/delete-order/{id}")
-    public Status deleteOneOrder(@PathVariable Long id){
-        return orderService.deleteOrderById(id);
-    }
 }

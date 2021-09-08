@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_customers")
@@ -22,7 +23,7 @@ public class Customer {
     private String firstName;
 
     @Column(name = "last_name")
-    private String lastnName;
+    private String lastName;
 
     @Column
     private String email;
@@ -33,7 +34,7 @@ public class Customer {
     @Column
     private Sex sex;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "basket")
-    private Basket basket;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "orders")
+    private List<Order> orders;
 }

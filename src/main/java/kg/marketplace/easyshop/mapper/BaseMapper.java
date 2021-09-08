@@ -7,4 +7,6 @@ public interface BaseMapper<ENTITY, DTO> {
     DTO toDTO(ENTITY entity);
     List<ENTITY> toEntityList(List<DTO> dtoList);
     List<DTO> toDTOList(List<ENTITY> entityList);
+
+
 }

@@ -14,11 +14,14 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Override
     List<Customer> findAll();
+    List<Customer> findAllByOrdersIsNull();
+    List<Customer> findAllByOrdersIsNotNull();
+    Optional<Customer> findCustomerById(Long id);
 
-    Customer findCustomerByIdAndBasketIsNull(Long id);
-    //Select 1 from tb_customers Where basket IS NULL;
+//    @Query(value = "SELECT c FROM tb_customer c WHERE date_part('year', age(dob)) > 18")
+//    Optional<Customer> findAdultCustomers();
 
-    Optional<Customer> getCustomerById(Long id);
+
 
     @Transactional
     Optional<Customer> deleteCustomerById(Long id);
