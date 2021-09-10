@@ -1,6 +1,7 @@
 package kg.marketplace.easyshop.dto;
 
 import kg.marketplace.easyshop.entity.Order;
+import kg.marketplace.easyshop.enums.Role;
 import kg.marketplace.easyshop.enums.Sex;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 public class UserDTO {
     private Long id;
     private String firstName;
-    private String lastnName;
+    private String lastName;
     private String email;
     private Date dob;
     private Sex sex;

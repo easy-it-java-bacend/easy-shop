@@ -1,6 +1,8 @@
 package kg.marketplace.easyshop.service.impl;
 
+import kg.marketplace.easyshop.dto.ChangeUserRoleDTO;
 import kg.marketplace.easyshop.dto.UserDTO;
+import kg.marketplace.easyshop.enums.Role;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.exceptions.CustomerNotFoundException;
 import kg.marketplace.easyshop.exceptions.CustomerSaveException;
@@ -11,6 +13,11 @@ import kg.marketplace.easyshop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -26,11 +33,16 @@ public class UserServiceImpl implements UserService {
         if (userDTO.getDob() == null) {
             throw new CustomerSaveException("Empty required dob field");
         }
-        int age = (int) ((userDTO.getDob().getTime()) / 365.25 - 1970);
-        if (age < 18) {
-            throw new CustomerSaveException("Customer is not adult enought");
-        }
         User user = UserMapper.INSTANCE.toEntity(userDTO);
+
+        LocalDate dob = userDTO.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Period period = Period.between(dob, LocalDate.now());
+        if (period.getYears() < 18) {
+            user.setRole(Role.CUSTOMER_NOT_ADULT);
+        }
+        else {
+            user.setRole(Role.CUSTOMER);
+        }
         userRepository.save(user);
     }
 
@@ -50,4 +62,10 @@ public class UserServiceImpl implements UserService {
         }
         return Status.FAIL;
     }
+
+    public Status changeUserRoleById(ChangeUserRoleDTO changeUserRoleDTO) {
+        userRepository.changeRoleById(changeUserRoleDTO.getId(), changeUserRoleDTO.getRole());
+        return Status.SUCCESS;
+    }
+
 }
