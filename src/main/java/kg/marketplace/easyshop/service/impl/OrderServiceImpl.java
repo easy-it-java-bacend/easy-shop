@@ -20,41 +20,34 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
 
-
-    public Order getOneOrderById(Long id) {
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new OrderNotFoundException("id: " + id));
-    }
-
-
-    public List<Order> getAllOrder() {
-        return orderRepository.findAll();
-    }
-
-
-    public void save(OrderDTO orderDTO) {
-
-        if(orderDTO.getQuantity() == 0){
-            throw new OrderSaveException("Empty required [Quantity] field");
-        }
-        if(orderDTO.getTotalSum() == 0){
-            throw new OrderSaveException("Total Sum is Empty!");
-        }
-
-        if(orderDTO.getProduct() == null){
-            throw new OrderSaveException("You not have Product");
-        }
-
+    @Override
+    public void makeOrder(OrderDTO orderDTO) {
         Order order = OrderMapper.INSTANCE.toEntity(orderDTO);
         orderRepository.save(order);
     }
 
 
+
     public Status deleteOneById(Long id) {
-        if(orderRepository.deleteOrderById(id).isPresent()){
+        if (orderRepository.deleteOrderById(id).isPresent()) {
             orderRepository.deleteOrderById(id);
             return Status.SUCCESS;
         }
         return Status.FAIL;
+    }
+
+    @Override
+    public Order getOrderById(Long id) {
+        return orderRepository.findById(id)
+               .orElseThrow(() -> new OrderNotFoundException("For id : " + id));
+        }
+
+
+
+    @Override
+    public List<OrderDTO> getOrdersLessThan(Double limit) {
+        List<Order> orders = orderRepository.findAllByTotalSumLessThan(limit);
+        return OrderMapper.INSTANCE.toDTOList(orders);
+
     }
 }

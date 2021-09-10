@@ -1,14 +1,14 @@
 package kg.marketplace.easyshop.dto;
 
-import kg.marketplace.easyshop.entity.Order;
+import kg.marketplace.easyshop.enums.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
-public class BasketDTO{
+public class ChangeUserRoleDTO {
+
     private Long id;
-    private List<Order> orders;
+    private Role role;
+
 }

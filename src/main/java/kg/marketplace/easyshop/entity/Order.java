@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "tb_orders")
@@ -21,6 +22,9 @@ public class Order {
 
     @Column(name = "total_sum")
     private Double totalSum;
+
+    @Column(name = "order_date")
+    private Date orderDate;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product")
