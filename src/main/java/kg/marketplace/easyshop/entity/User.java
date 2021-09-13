@@ -5,6 +5,7 @@ import kg.marketplace.easyshop.enums.Role;
 import kg.marketplace.easyshop.enums.Sex;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import springfox.documentation.spring.web.json.Json;
 
 import javax.persistence.*;
@@ -15,12 +16,8 @@ import java.util.List;
 @Table(name = "tb_customers")
 @NoArgsConstructor
 @Data
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+@SequenceGenerator(name = "SEQ_ID", sequenceName = "SEQ_USER", allocationSize = 1)
+public class User extends BaseEntity {
 
     @Column(name = "first_name")
     private String firstName;

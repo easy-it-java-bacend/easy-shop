@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -13,5 +14,5 @@ public class OrderDTO {
     private Integer quantity;
     private Date orderDate;
     private Double totalSum;
-    private Product product;
+    private List<Product> product;
 }

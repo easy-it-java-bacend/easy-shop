@@ -5,17 +5,14 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_orders")
 @NoArgsConstructor
 @Data
-public class Order {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+@SequenceGenerator(name = "SEQ_ID", sequenceName = "SEQ_ORDER", allocationSize = 1)
+public class Order extends BaseEntity {
 
     @Column
     private Integer quantity;
@@ -26,7 +23,7 @@ public class Order {
     @Column(name = "order_date")
     private Date orderDate;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "product")
-    private Product product;
+    private List<Product> product;
 }

@@ -23,7 +23,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrderById(Long id) {
+    public OrderDTO getOrderById(Long id) {
         return null;
     }
 

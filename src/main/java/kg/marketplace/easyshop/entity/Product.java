@@ -9,12 +9,8 @@ import javax.persistence.*;
 @Table(name = "tb_products")
 @NoArgsConstructor
 @Data
-public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private Long id;
+@SequenceGenerator(name = "SEQ_ID", sequenceName = "SEQ_PRODUCT", allocationSize = 1)
+public class Product extends BaseEntity {
 
     @Column
     private String name;
