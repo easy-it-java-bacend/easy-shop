@@ -5,6 +5,7 @@ import kg.marketplace.easyshop.entity.Order;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class OrderController {
     }
 
     @GetMapping("/get-all-less-than")
+    @PreAuthorize("hasAuthority('READ_ORDER')")
     public List<OrderDTO> getAllOrdesLessThan(@RequestParam(defaultValue = "0") Double limit) {
         return orderService.getOrdersLessThan(limit);
     }

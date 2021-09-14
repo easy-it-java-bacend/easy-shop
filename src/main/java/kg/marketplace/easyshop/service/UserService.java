@@ -1,6 +1,7 @@
 package kg.marketplace.easyshop.service;
 
 import kg.marketplace.easyshop.dto.ChangeUserRoleDTO;
+import kg.marketplace.easyshop.dto.RequestNewUser;
 import kg.marketplace.easyshop.dto.UserDTO;
 import kg.marketplace.easyshop.entity.User;
 import kg.marketplace.easyshop.enums.Status;
@@ -13,7 +14,7 @@ public interface UserService {
 
     User getOneCustomerById(Long id);
     List<User> getAllCustomers();
-    void save(UserDTO userDTO);
+    Status save(RequestNewUser requestNewUser);
     Status deleteOneById(Long id);
     Status changeUserRoleById(ChangeUserRoleDTO changeUserRoleDTO);
 }

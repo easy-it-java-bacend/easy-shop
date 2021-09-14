@@ -1,23 +1,25 @@
 package kg.marketplace.easyshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import kg.marketplace.easyshop.enums.Role;
 import kg.marketplace.easyshop.enums.Sex;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 @Entity
-@Table(name = "tb_customers")
+@Table(name = "tb_user")
 @NoArgsConstructor
 @Data
 @SequenceGenerator(name = "SEQ_ID", sequenceName = "SEQ_USER", allocationSize = 1)
-public class User extends BaseEntity {
+public class User extends BaseEntityAudit implements UserDetails {
 
     @Column(name = "first_name")
     private String firstName;
@@ -40,7 +42,43 @@ public class User extends BaseEntity {
     @JoinColumn(name = "orders")
     private List<Order> orders;
 
-    @Column
-    @Enumerated(EnumType.STRING)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "fk_role")
     private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<SimpleGrantedAuthority> authorities = new HashSet(role.getPermissions());
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
 }

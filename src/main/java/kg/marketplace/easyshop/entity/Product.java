@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @SequenceGenerator(name = "SEQ_ID", sequenceName = "SEQ_PRODUCT", allocationSize = 1)
-public class Product extends BaseEntity {
+public class Product extends BaseEntityAudit {
 
     @Column
     private String name;

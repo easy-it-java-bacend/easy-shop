@@ -17,22 +17,25 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/get-one-by-id/{id}")
+    @PreAuthorize("hasAuthority('READ_PRODUCT')")
     public ProductDTO getOneById(@PathVariable Long id) {
         return productService.getOneById(id);
     }
 
     @GetMapping("/get-all")
+    @PreAuthorize("hasAuthority('READ_PRODUCT')")
     public List<ProductDTO> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @DeleteMapping("/delete-product-by-id/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
+    @PreAuthorize("hasAuthority(DELETE_PRODUCT)")
     public Status deleteOneById(@PathVariable Long id) {
         return productService.deleteOneById(id);
     }
 
     @PostMapping("/add-one-product")
+    @PreAuthorize("hasAuthority(ADD_PRODUCT)")
     public Status addProduct(@RequestBody ProductDTO productDTO) {
         return productService.addProduct(productDTO);
     }

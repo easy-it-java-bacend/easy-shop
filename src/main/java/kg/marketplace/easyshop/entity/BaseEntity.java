@@ -23,11 +23,5 @@ public abstract class BaseEntity {
     @Column
     protected boolean deleted;
 
-    @Column
-    protected Date dateCreated;
-
-    @Column
-    protected Date dateUpdated;
-
 
 }

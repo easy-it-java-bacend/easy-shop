@@ -1,8 +1,12 @@
 package kg.marketplace.easyshop.controller;
 
 import kg.marketplace.easyshop.dto.ChangeUserRoleDTO;
+import kg.marketplace.easyshop.dto.RequestNewUser;
+import kg.marketplace.easyshop.dto.RoleDTO;
 import kg.marketplace.easyshop.dto.UserDTO;
+import kg.marketplace.easyshop.entity.Role;
 import kg.marketplace.easyshop.entity.User;
+import kg.marketplace.easyshop.enums.Permission;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +23,13 @@ public class UserController {
 
     private final UserService userService;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.OK)
-    public Status save(@RequestBody UserDTO userDTO) {
-        userService.save(userDTO);
+    public Status save(@RequestBody RequestNewUser requestNewUser) {
+        userService.save(requestNewUser);
         return Status.SUCCESS;
     }
 
-    @PreAuthorize("hasPermission('PERMISSION_GETUSER')")
     @GetMapping("/get-one/{id}")
     @ResponseStatus(HttpStatus.OK)
     public User getOne(@PathVariable Long id) {
@@ -44,8 +46,7 @@ public class UserController {
         return userService.deleteOneById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("")
+    @PutMapping("/change-user-role")
     public Status changeUserRoleById(@RequestBody ChangeUserRoleDTO changeUserRoleDTO) {
         return userService.changeUserRoleById(changeUserRoleDTO);
     }

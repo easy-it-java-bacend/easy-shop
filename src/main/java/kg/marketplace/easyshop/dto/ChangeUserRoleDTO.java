@@ -1,6 +1,6 @@
 package kg.marketplace.easyshop.dto;
 
-import kg.marketplace.easyshop.enums.Role;
+import kg.marketplace.easyshop.entity.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

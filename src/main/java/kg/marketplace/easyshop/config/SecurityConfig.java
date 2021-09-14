@@ -1,5 +1,6 @@
 package kg.marketplace.easyshop.config;
 
+import kg.marketplace.easyshop.enums.Permission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,16 +24,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf()
+                .disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/user/**", "/api/v1/order/**")
-                .hasAnyRole("ROLE_ADMIN", "ROLE_USER", "ROLE_USER_NOT_ADULT")
-                .antMatchers("/api/v1/user/**", "/api/v1/order/**")
+                .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic()
-                .and()
-                .csrf()
-                .disable();
+                .httpBasic();
     }
 
     @Override
@@ -41,9 +39,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UserDetails user = User.builder()
                 .username("username")
                 .password(passwordEncoder.encode("pass"))
-                .roles("ADMIN")
+                .authorities(Permission.READ_PRODUCT.name())
                 .build();
-        System.out.println(user);
-        return new InMemoryUserDetailsManager(user);
+
+        UserDetails userTwo = User.builder()
+                .username("usernametwo")
+                .password(passwordEncoder.encode("pass"))
+                .authorities(Permission.ADD_PRODUCT.name(), Permission.READ_PRODUCT.name())
+                .build();
+
+        return new InMemoryUserDetailsManager(user, userTwo);
     }
 }
