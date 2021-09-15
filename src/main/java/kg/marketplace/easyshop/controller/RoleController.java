@@ -1,8 +1,8 @@
 package kg.marketplace.easyshop.controller;
 
+import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 import kg.marketplace.easyshop.dto.RoleDTO;
 import kg.marketplace.easyshop.enums.Permission;
-import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ public class RoleController {
     private final RoleService roleService;
 
     @PostMapping("/add")
-    public Status addRole(@RequestBody RoleDTO roleDTO) {
+    public ResponseStatusDTO addRole(@RequestBody RoleDTO roleDTO) {
         return roleService.addRole(roleDTO);
     }
 

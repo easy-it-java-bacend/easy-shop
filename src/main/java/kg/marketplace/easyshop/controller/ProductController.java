@@ -1,7 +1,7 @@
 package kg.marketplace.easyshop.controller;
 
 import kg.marketplace.easyshop.dto.ProductDTO;
-import kg.marketplace.easyshop.enums.Status;
+import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 import kg.marketplace.easyshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,13 +30,13 @@ public class ProductController {
 
     @DeleteMapping("/delete-product-by-id/{id}")
     @PreAuthorize("hasAuthority(DELETE_PRODUCT)")
-    public Status deleteOneById(@PathVariable Long id) {
+    public ResponseStatusDTO deleteOneById(@PathVariable Long id) {
         return productService.deleteOneById(id);
     }
 
     @PostMapping("/add-one-product")
     @PreAuthorize("hasAuthority(ADD_PRODUCT)")
-    public Status addProduct(@RequestBody ProductDTO productDTO) {
+    public ResponseStatusDTO addProduct(@RequestBody ProductDTO productDTO) {
         return productService.addProduct(productDTO);
     }
 

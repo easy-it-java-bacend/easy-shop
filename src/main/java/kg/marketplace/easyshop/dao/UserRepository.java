@@ -18,11 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByOrdersIsNull();
     List<User> findAllByOrdersIsNotNull();
     Optional<User> findCustomerById(Long id);
-
-
-
-
-    @Transactional
-    Optional<User> deleteCustomerById(Long id);
+    Optional<User> findByUsername(String username);
+    boolean existsByEmail(String email);
 }
 

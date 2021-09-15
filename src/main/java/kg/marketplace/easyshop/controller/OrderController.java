@@ -1,7 +1,7 @@
 package kg.marketplace.easyshop.controller;
 
 import kg.marketplace.easyshop.dto.OrderDTO;
-import kg.marketplace.easyshop.entity.Order;
+import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,8 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/make-order")
-    public Status makeOrder(@RequestBody OrderDTO orderDTO) {
-        orderService.makeOrder(orderDTO);
-        return Status.SUCCESS;
+    public ResponseStatusDTO makeOrder(@RequestBody OrderDTO orderDTO) {
+        return orderService.makeOrder(orderDTO);
     }
 
     @GetMapping("/get-all-less-than")

@@ -12,13 +12,13 @@ import javax.persistence.*;
 @SequenceGenerator(name = "SEQ_ID", sequenceName = "SEQ_PRODUCT", allocationSize = 1)
 public class Product extends BaseEntityAudit {
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
-    @Column
+    @Column(nullable = false)
     private String description;
 
-    @Column
+    @Column(nullable = false)
     private Double price;
 
 }

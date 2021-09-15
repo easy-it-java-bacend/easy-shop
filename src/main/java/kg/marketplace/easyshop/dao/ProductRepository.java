@@ -14,5 +14,4 @@ public interface ProductRepository  extends JpaRepository<Product, Long> {
 
     Optional<List<Product>> findAllByDeletedFalseAndArchivedFalse();
     Optional<Product> findProductByIdAndDeletedFalseAndArchivedFalse(Long id);
-
 }

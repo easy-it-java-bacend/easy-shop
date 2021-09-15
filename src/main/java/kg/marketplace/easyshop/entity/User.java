@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "tb_user")
@@ -46,39 +47,47 @@ public class User extends BaseEntityAudit implements UserDetails {
     @JoinColumn(name = "fk_role")
     private Role role;
 
+    @Column
+    private String username;
+
+    @Column
+    private String password;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<SimpleGrantedAuthority> authorities = new HashSet(role.getPermissions());
-        return authorities;
+       return role.getPermissions()
+               .stream()
+               .map(permission -> new SimpleGrantedAuthority(permission.name()))
+               .collect(Collectors.toSet());
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

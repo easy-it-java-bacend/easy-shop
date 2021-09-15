@@ -2,18 +2,16 @@ package kg.marketplace.easyshop.service.impl;
 
 import kg.marketplace.easyshop.dao.ProductRepository;
 import kg.marketplace.easyshop.dto.ProductDTO;
+import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 import kg.marketplace.easyshop.entity.Product;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.exceptions.ProductNotFoundException;
 import kg.marketplace.easyshop.mapper.ProductMapper;
 import kg.marketplace.easyshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -41,20 +39,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Status deleteOneById(Long id) {
-        Optional<Product> p = productRepository
+    public ResponseStatusDTO deleteOneById(Long id) {
+        return productRepository
                 .findProductByIdAndDeletedFalseAndArchivedFalse(id)
                 .map(product -> {
+                    if (product.isDeleted()) {
+                        return new ResponseStatusDTO(Status.FAIL,
+                                "Product with id = " + id + " is already deleted");
+                    }
                     product.setDeleted(true);
-                    return productRepository.save(product);
-                });
-        return p.isPresent() ? Status.SUCCESS : Status.FAIL;
+                    productRepository.save(product);
+                    return new ResponseStatusDTO(Status.SUCCESS, "Product with id = " + id + " is deleted");
+                }).orElseThrow(() -> new ProductNotFoundException("For id = " + id));
     }
 
     @Override
-    public Status addProduct(ProductDTO productDTO) {
+    public ResponseStatusDTO addProduct(ProductDTO productDTO) {
         Product product = ProductMapper.INSTANCE.toEntity(productDTO);
         productRepository.save(product);
-        return Status.SUCCESS;
+        return new ResponseStatusDTO(Status.SUCCESS, "Product is added");
     }
 }
