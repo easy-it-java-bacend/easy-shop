@@ -1,9 +1,7 @@
 package kg.marketplace.easyshop.service.impl;
 
 import kg.marketplace.easyshop.dao.RoleRepository;
-import kg.marketplace.easyshop.dto.ChangeUserRoleDTO;
-import kg.marketplace.easyshop.dto.RequestNewUser;
-import kg.marketplace.easyshop.dto.ResponseStatusDTO;
+import kg.marketplace.easyshop.dto.*;
 import kg.marketplace.easyshop.entity.Role;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.exceptions.UserNotFoundException;
@@ -15,6 +13,8 @@ import kg.marketplace.easyshop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
     public ResponseStatusDTO save(RequestNewUser requestNewUser) {
         if (requestNewUser.getEmail().isEmpty()) {
@@ -42,15 +42,18 @@ public class UserServiceImpl implements UserService {
         String email = user.getEmail();
         user.setRole(role);
         user.setUsername(email.substring(0, email.indexOf('@')));
-        return new ResponseStatusDTO(Status.SUCCESS, "User saved");
+        user.setPassword(passwordEncoder.encode(requestNewUser.getPassword()));
+
+        userRepository.save(user);
+        return new ResponseStatusWithObjectDTO<>(Status.SUCCESS, "User saved", user);
     }
 
-    public User getOneCustomerById(Long id) {
+    public User getOneUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("For id : " + id));
     }
 
-    public List<User> getAllCustomers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
@@ -63,8 +66,8 @@ public class UserServiceImpl implements UserService {
                     }
                     user.setDeleted(true);
                     userRepository.save(user);
-                    return new ResponseStatusDTO(Status.SUCCESS,
-                            "User by id = " + id + " deleted");
+                    return new ResponseStatusWithObjectDTO<>(Status.SUCCESS,
+                            "User by id = " + id + " deleted", user);
                 }).orElseThrow(() -> new UserNotFoundException("For id = " + id));
     }
 
@@ -74,9 +77,14 @@ public class UserServiceImpl implements UserService {
                     Role role = user.getRole();
                     user.setRole(changeUserRoleDTO.getRole());
                     userRepository.save(user);
-                    return new ResponseStatusDTO(Status.SUCCESS,
-                            "User role changed from " + role + " to " + changeUserRoleDTO.getRole() + " by id = " + changeUserRoleDTO.getId());
+                    return new ResponseStatusWithObjectDTO<>(Status.SUCCESS,
+                            "User role changed from " + role + " to " + changeUserRoleDTO.getRole() + " by id = " + changeUserRoleDTO.getId(), user);
                 }).orElseThrow(() -> new UserNotFoundException("For id = " + changeUserRoleDTO.getId()));
+    }
+
+    @Override
+    public void login(AuthenticationRequest authenticationRequest) {
+
     }
 
     @Override

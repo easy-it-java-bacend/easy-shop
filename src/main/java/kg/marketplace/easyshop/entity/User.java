@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Table(name = "tb_user")
 @NoArgsConstructor
 @Data
-@SequenceGenerator(name = "SEQ_ID", sequenceName = "SEQ_USER", allocationSize = 1)
+@SequenceGenerator(name = "SEQ_ID", sequenceName = "SEQ_USER", allocationSize = 1, initialValue = 2)
 public class User extends BaseEntityAudit implements UserDetails {
 
     @Column(name = "first_name")
@@ -32,7 +32,7 @@ public class User extends BaseEntityAudit implements UserDetails {
     private String email;
 
     @Column(name = "date_of_birth", columnDefinition = "DATE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private Date dob;
 
     @Column

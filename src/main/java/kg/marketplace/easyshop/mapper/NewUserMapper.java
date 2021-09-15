@@ -14,6 +14,7 @@ public interface NewUserMapper extends BaseMapper<User, RequestNewUser> {
     @Override
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "username", ignore = true)
-    @Mapping(target = "order", ignore = true)
+    @Mapping(target = "orders", ignore = true)
+    @Mapping(target = "password", ignore = true)
     User toEntity(RequestNewUser requestNewUser);
 }

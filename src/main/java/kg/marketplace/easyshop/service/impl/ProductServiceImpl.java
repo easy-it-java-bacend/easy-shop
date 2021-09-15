@@ -3,6 +3,7 @@ package kg.marketplace.easyshop.service.impl;
 import kg.marketplace.easyshop.dao.ProductRepository;
 import kg.marketplace.easyshop.dto.ProductDTO;
 import kg.marketplace.easyshop.dto.ResponseStatusDTO;
+import kg.marketplace.easyshop.dto.ResponseStatusWithObjectDTO;
 import kg.marketplace.easyshop.entity.Product;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.exceptions.ProductNotFoundException;
@@ -49,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
                     }
                     product.setDeleted(true);
                     productRepository.save(product);
-                    return new ResponseStatusDTO(Status.SUCCESS, "Product with id = " + id + " is deleted");
+                    return new ResponseStatusWithObjectDTO(Status.SUCCESS, "Product with id = " + id + " is deleted", product);
                 }).orElseThrow(() -> new ProductNotFoundException("For id = " + id));
     }
 
@@ -57,6 +58,6 @@ public class ProductServiceImpl implements ProductService {
     public ResponseStatusDTO addProduct(ProductDTO productDTO) {
         Product product = ProductMapper.INSTANCE.toEntity(productDTO);
         productRepository.save(product);
-        return new ResponseStatusDTO(Status.SUCCESS, "Product is added");
+        return new ResponseStatusWithObjectDTO(Status.SUCCESS, "Product is added", product);
     }
 }

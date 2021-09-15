@@ -2,7 +2,10 @@ package kg.marketplace.easyshop.service.impl;
 
 import kg.marketplace.easyshop.dao.OrderRepository;
 import kg.marketplace.easyshop.dto.OrderDTO;
+import kg.marketplace.easyshop.dto.ResponseStatusDTO;
+import kg.marketplace.easyshop.dto.ResponseStatusWithObjectDTO;
 import kg.marketplace.easyshop.entity.Order;
+import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.mapper.OrderMapper;
 import kg.marketplace.easyshop.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +20,11 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
     @Override
-    public void makeOrder(OrderDTO orderDTO) {
+    public ResponseStatusDTO makeOrder(OrderDTO orderDTO) {
         Order order = OrderMapper.INSTANCE.toEntity(orderDTO);
         orderRepository.save(order);
+        return new ResponseStatusWithObjectDTO<>(Status.SUCCESS,
+                "Order added", order);
     }
 
     @Override
