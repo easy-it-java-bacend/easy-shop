@@ -52,6 +52,6 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> getOrdersLessThan(Double limit) {
         List<Order> orders = orderRepository.findAllByTotalSumLessThan(limit);
         return OrderMapper.INSTANCE.toDTOList(orders);
-
     }
+
 }
