@@ -1,26 +1,26 @@
 package kg.marketplace.easyshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import kg.marketplace.easyshop.enums.Role;
 import kg.marketplace.easyshop.enums.Sex;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import springfox.documentation.spring.web.json.Json;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "tb_customers")
+@Table(name = "tb_user")
 @NoArgsConstructor
 @Data
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+@SequenceGenerator(name = "SEQ_ID", sequenceName = "SEQ_USER", allocationSize = 1, initialValue = 2)
+public class User extends BaseEntityAudit implements UserDetails {
 
     @Column(name = "first_name")
     private String firstName;
@@ -32,7 +32,7 @@ public class User {
     private String email;
 
     @Column(name = "date_of_birth", columnDefinition = "DATE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private Date dob;
 
     @Column
@@ -43,7 +43,51 @@ public class User {
     @JoinColumn(name = "orders")
     private List<Order> orders;
 
-    @Column
-    @Enumerated(EnumType.STRING)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "fk_role")
     private Role role;
+
+    @Column
+    private String username;
+
+    @Column
+    private String password;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+       return role.getPermissions()
+               .stream()
+               .map(permission -> new SimpleGrantedAuthority(permission.name()))
+               .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

@@ -1,23 +1,22 @@
 package kg.marketplace.easyshop.service.impl;
 
-import kg.marketplace.easyshop.dto.ChangeUserRoleDTO;
-import kg.marketplace.easyshop.dto.UserDTO;
-import kg.marketplace.easyshop.enums.Role;
+import kg.marketplace.easyshop.dao.RoleRepository;
+import kg.marketplace.easyshop.dto.*;
+import kg.marketplace.easyshop.entity.Role;
 import kg.marketplace.easyshop.enums.Status;
-import kg.marketplace.easyshop.exceptions.CustomerNotFoundException;
-import kg.marketplace.easyshop.exceptions.CustomerSaveException;
+import kg.marketplace.easyshop.exceptions.UserNotFoundException;
+import kg.marketplace.easyshop.exceptions.UserSaveException;
 import kg.marketplace.easyshop.dao.UserRepository;
 import kg.marketplace.easyshop.entity.User;
-import kg.marketplace.easyshop.mapper.UserMapper;
+import kg.marketplace.easyshop.mapper.NewUserMapper;
 import kg.marketplace.easyshop.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -25,47 +24,73 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public void save(UserDTO userDTO) {
-        if (userDTO.getEmail().isEmpty()) {
-            throw new CustomerSaveException("Empty required email field");
+    public ResponseStatusDTO save(RequestNewUser requestNewUser) {
+        if (requestNewUser.getEmail().isEmpty()) {
+            throw new UserSaveException("Empty required email field");
         }
-        if (userDTO.getDob() == null) {
-            throw new CustomerSaveException("Empty required dob field");
-        }
-        User user = UserMapper.INSTANCE.toEntity(userDTO);
+        Role role = roleRepository.findById(requestNewUser.getRoleId()).get();
 
-        LocalDate dob = userDTO.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Period period = Period.between(dob, LocalDate.now());
-        if (period.getYears() < 18) {
-            user.setRole(Role.CUSTOMER_NOT_ADULT);
+        if (userRepository.existsByEmail(requestNewUser.getEmail())) {
+            return new ResponseStatusDTO(Status.FAIL,
+                    "User with email = " + requestNewUser.getEmail() + " is already exists");
         }
-        else {
-            user.setRole(Role.CUSTOMER);
-        }
+
+        User user = NewUserMapper.INSTANCE.toEntity(requestNewUser);
+        String email = user.getEmail();
+        user.setRole(role);
+        user.setUsername(email.substring(0, email.indexOf('@')));
+        user.setPassword(passwordEncoder.encode(requestNewUser.getPassword()));
+
         userRepository.save(user);
+        return new ResponseStatusWithObjectDTO<>(Status.SUCCESS, "User saved", user);
     }
 
-    public User getOneCustomerById(Long id) {
+    public User getOneUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException("For id : " + id));
+                .orElseThrow(() -> new UserNotFoundException("For id : " + id));
     }
 
-    public List<User> getAllCustomers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public Status deleteOneById(Long id) {
-        if (userRepository.deleteCustomerById(id).isPresent()) {
-            userRepository.deleteCustomerById(id);
-            return Status.SUCCESS;
-        }
-        return Status.FAIL;
+    public ResponseStatusDTO deleteOneById(Long id) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    if (user.isDeleted()) {
+                        return new ResponseStatusDTO(Status.FAIL,
+                                "User by id = " + id + " is already deleted");
+                    }
+                    user.setDeleted(true);
+                    userRepository.save(user);
+                    return new ResponseStatusWithObjectDTO<>(Status.SUCCESS,
+                            "User by id = " + id + " deleted", user);
+                }).orElseThrow(() -> new UserNotFoundException("For id = " + id));
     }
 
-    public Status changeUserRoleById(ChangeUserRoleDTO changeUserRoleDTO) {
-        userRepository.changeRoleById(changeUserRoleDTO.getId(), changeUserRoleDTO.getRole());
-        return Status.SUCCESS;
+    public ResponseStatusDTO changeUserRoleById(ChangeUserRoleDTO changeUserRoleDTO) {
+        return userRepository.findById(changeUserRoleDTO.getId())
+                .map(user -> {
+                    Role role = user.getRole();
+                    user.setRole(changeUserRoleDTO.getRole());
+                    userRepository.save(user);
+                    return new ResponseStatusWithObjectDTO<>(Status.SUCCESS,
+                            "User role changed from " + role + " to " + changeUserRoleDTO.getRole() + " by id = " + changeUserRoleDTO.getId(), user);
+                }).orElseThrow(() -> new UserNotFoundException("For id = " + changeUserRoleDTO.getId()));
     }
 
+    @Override
+    public void login(AuthenticationRequest authenticationRequest) {
+
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
+    }
 }

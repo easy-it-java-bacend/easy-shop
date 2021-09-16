@@ -2,11 +2,11 @@ package kg.marketplace.easyshop.service.impl;
 
 import kg.marketplace.easyshop.dao.OrderRepository;
 import kg.marketplace.easyshop.dto.OrderDTO;
+import kg.marketplace.easyshop.dto.ResponseStatusDTO;
+import kg.marketplace.easyshop.dto.ResponseStatusWithObjectDTO;
 import kg.marketplace.easyshop.entity.Order;
 import kg.marketplace.easyshop.enums.Status;
-import kg.marketplace.easyshop.exceptions.CustomerNotFoundException;
 import kg.marketplace.easyshop.exceptions.OrderNotFoundException;
-import kg.marketplace.easyshop.exceptions.OrderSaveException;
 import kg.marketplace.easyshop.mapper.OrderMapper;
 import kg.marketplace.easyshop.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +21,11 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
     @Override
-    public void makeOrder(OrderDTO orderDTO) {
+    public ResponseStatusDTO makeOrder(OrderDTO orderDTO) {
         Order order = OrderMapper.INSTANCE.toEntity(orderDTO);
         orderRepository.save(order);
+        return new ResponseStatusWithObjectDTO<>(Status.SUCCESS,
+                "Order added", order);
     }
 
 
@@ -37,11 +39,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrderById(Long id) {
-        return orderRepository.findById(id)
-               .orElseThrow(() -> new OrderNotFoundException("For id : " + id));
-        }
 
+
+
+    public OrderDTO getOrderById(Long id) {
+        return OrderMapper.INSTANCE.toDTO(orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("For id : " + id)));
+    }
 
 
     @Override

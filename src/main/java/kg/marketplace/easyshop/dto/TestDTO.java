@@ -1,14 +1,11 @@
 package kg.marketplace.easyshop.dto;
 
-import kg.marketplace.easyshop.entity.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
-public class ChangeUserRoleDTO {
-
+@Data
+public class TestDTO {
     private Long id;
-    private Role role;
-
+    private String somethingToTest;
 }
