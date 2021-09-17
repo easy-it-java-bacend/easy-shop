@@ -50,7 +50,8 @@ public class UserServiceImpl implements UserService {
 
     public User getOneUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("For id : " + id));
+                .orElseThrow(() -> new UserNotFoundException(
+                        new ResponseStatusDTO(Status.EXCEPTION,"For id : " + id)));
     }
 
     public List<User> getAllUsers() {
@@ -68,7 +69,8 @@ public class UserServiceImpl implements UserService {
                     userRepository.save(user);
                     return new ResponseStatusWithObjectDTO<>(Status.SUCCESS,
                             "User by id = " + id + " deleted", user);
-                }).orElseThrow(() -> new UserNotFoundException("For id = " + id));
+                }).orElseThrow(() -> new UserNotFoundException(
+                        new ResponseStatusDTO(Status.EXCEPTION,"For id : " + id)));
     }
 
     public ResponseStatusDTO changeUserRoleById(ChangeUserRoleDTO changeUserRoleDTO) {
@@ -79,7 +81,11 @@ public class UserServiceImpl implements UserService {
                     userRepository.save(user);
                     return new ResponseStatusWithObjectDTO<>(Status.SUCCESS,
                             "User role changed from " + role + " to " + changeUserRoleDTO.getRole() + " by id = " + changeUserRoleDTO.getId(), user);
-                }).orElseThrow(() -> new UserNotFoundException("For id = " + changeUserRoleDTO.getId()));
+                }).orElseThrow(() ->
+                        new UserNotFoundException(
+                        new ResponseStatusDTO(
+                                Status.EXCEPTION,
+                                "For id : " + changeUserRoleDTO.getId())));
     }
 
     @Override

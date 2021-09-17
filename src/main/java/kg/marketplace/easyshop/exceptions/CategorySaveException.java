@@ -4,10 +4,8 @@ import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class UserNotFoundException extends RuntimeException {
+public class CategorySaveException extends RuntimeException{
 
-    private final ResponseStatusDTO responseStatusDTO;
-
-
+  private final ResponseStatusDTO responseStatusDTO;
 
 }
