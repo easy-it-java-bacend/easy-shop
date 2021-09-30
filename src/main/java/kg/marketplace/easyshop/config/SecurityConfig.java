@@ -9,29 +9,51 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final JwtTokenFilter jwtTokenFilter;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf()
-                .disable()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/login").permitAll()
-                .anyRequest()
-                .authenticated()
+                .cors()
                 .and()
-                .httpBasic();
+                .csrf()
+                .disable();
+
+        http
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(((request, response, authException) -> {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+                }));
+
+        http
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated();
+
+        http
+                .addFilterBefore(jwtTokenFilter,
+                        UsernamePasswordAuthenticationFilter.class);
     }
+
+
 
     @Bean
     protected AuthenticationProvider getAuthenticationProvider() {

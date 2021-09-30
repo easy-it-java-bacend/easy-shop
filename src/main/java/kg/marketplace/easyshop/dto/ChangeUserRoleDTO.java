@@ -1,6 +1,5 @@
 package kg.marketplace.easyshop.dto;
 
-import kg.marketplace.easyshop.entity.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +8,6 @@ import lombok.NoArgsConstructor;
 public class ChangeUserRoleDTO {
 
     private Long id;
-    private Role role;
+    private Long role;
 
 }

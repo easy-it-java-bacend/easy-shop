@@ -3,8 +3,9 @@ package kg.marketplace.easyshop.service;
 import kg.marketplace.easyshop.dto.AuthenticationRequest;
 import kg.marketplace.easyshop.dto.ChangeUserRoleDTO;
 import kg.marketplace.easyshop.dto.RequestNewUser;
-import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 import kg.marketplace.easyshop.entity.User;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +14,11 @@ import java.util.List;
 @Service
 public interface UserService extends UserDetailsService {
 
-    User getOneUserById(Long id);
+    ResponseEntity<?> getOneUserById(Long id);
     List<User> getAllUsers();
-    ResponseStatusDTO save(RequestNewUser requestNewUser);
-    ResponseStatusDTO deleteOneById(Long id);
-    ResponseStatusDTO changeUserRoleById(ChangeUserRoleDTO changeUserRoleDTO);
-    void login(AuthenticationRequest authenticationRequest);
+    ResponseEntity<?> save(RequestNewUser requestNewUser);
+    ResponseEntity<?> deleteOneById(Long id);
+    ResponseEntity<?> changeUserRoleById(ChangeUserRoleDTO changeUserRoleDTO);
 
+    UserDetails getOneByUsername(String username);
 }
