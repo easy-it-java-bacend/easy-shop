@@ -1,8 +1,6 @@
 package kg.marketplace.easyshop.controller;
 
 import kg.marketplace.easyshop.dto.OrderDTO;
-import kg.marketplace.easyshop.dto.ResponseStatusDTO;
-import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

@@ -1,9 +1,7 @@
 package kg.marketplace.easyshop.controller;
 
-import kg.marketplace.easyshop.dto.AuthenticationRequest;
 import kg.marketplace.easyshop.dto.ChangeUserRoleDTO;
 import kg.marketplace.easyshop.dto.RequestNewUser;
-import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 import kg.marketplace.easyshop.entity.User;
 import kg.marketplace.easyshop.service.UserService;
 import lombok.RequiredArgsConstructor;

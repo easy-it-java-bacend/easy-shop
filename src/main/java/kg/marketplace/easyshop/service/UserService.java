@@ -3,7 +3,6 @@ package kg.marketplace.easyshop.service;
 import kg.marketplace.easyshop.dto.AuthenticationRequest;
 import kg.marketplace.easyshop.dto.ChangeUserRoleDTO;
 import kg.marketplace.easyshop.dto.RequestNewUser;
-import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 import kg.marketplace.easyshop.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;

@@ -2,8 +2,6 @@ package kg.marketplace.easyshop.service.impl;
 
 import kg.marketplace.easyshop.dao.CategoryRepository;
 import kg.marketplace.easyshop.dto.CategoryDTO;
-import kg.marketplace.easyshop.dto.ResponseStatusDTO;
-import kg.marketplace.easyshop.dto.ResponseStatusWithObjectDTO;
 import kg.marketplace.easyshop.entity.Category;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.exceptions.CategoryNotFoundException;

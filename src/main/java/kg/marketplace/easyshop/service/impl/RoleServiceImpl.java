@@ -1,7 +1,6 @@
 package kg.marketplace.easyshop.service.impl;
 
 import kg.marketplace.easyshop.dao.RoleRepository;
-import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 import kg.marketplace.easyshop.dto.RoleDTO;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.mapper.RoleMapper;

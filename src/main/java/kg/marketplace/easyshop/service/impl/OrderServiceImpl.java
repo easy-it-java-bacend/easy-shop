@@ -2,8 +2,6 @@ package kg.marketplace.easyshop.service.impl;
 
 import kg.marketplace.easyshop.dao.OrderRepository;
 import kg.marketplace.easyshop.dto.OrderDTO;
-import kg.marketplace.easyshop.dto.ResponseStatusDTO;
-import kg.marketplace.easyshop.dto.ResponseStatusWithObjectDTO;
 import kg.marketplace.easyshop.entity.Order;
 import kg.marketplace.easyshop.enums.Status;
 import kg.marketplace.easyshop.exceptions.OrderNotFoundException;

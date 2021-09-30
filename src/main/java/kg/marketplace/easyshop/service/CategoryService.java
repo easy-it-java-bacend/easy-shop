@@ -2,7 +2,6 @@ package kg.marketplace.easyshop.service;
 
 
 import kg.marketplace.easyshop.dto.CategoryDTO;
-import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

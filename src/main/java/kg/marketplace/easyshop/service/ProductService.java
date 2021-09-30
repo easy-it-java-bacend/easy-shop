@@ -1,7 +1,6 @@
 package kg.marketplace.easyshop.service;
 
 import kg.marketplace.easyshop.dto.ProductDTO;
-import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 
 import java.util.List;
 

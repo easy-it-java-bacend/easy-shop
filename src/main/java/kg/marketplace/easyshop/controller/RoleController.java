@@ -1,8 +1,6 @@
 package kg.marketplace.easyshop.controller;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
-import kg.marketplace.easyshop.dto.ResponseStatusDTO;
 import kg.marketplace.easyshop.dto.RoleDTO;
 import kg.marketplace.easyshop.enums.Permission;
 import kg.marketplace.easyshop.service.RoleService;
