@@ -2,6 +2,7 @@ package kg.marketplace.easyshop.service;
 
 
 import kg.marketplace.easyshop.dto.CategoryDTO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,9 +11,9 @@ import java.util.List;
 public interface CategoryService {
 
 
-    ResponseStatusDTO addCategory(CategoryDTO categoryDTO);
-    ResponseStatusDTO deleteCategory(Long id);
-    ResponseStatusDTO changeCategory(CategoryDTO categoryDTO, Long id);
-    CategoryDTO getCategory(Long id);
-    List<CategoryDTO> getAllCategories();
+    ResponseEntity<?> addCategory(CategoryDTO categoryDTO);
+    ResponseEntity<?> deleteCategory(Long id);
+    ResponseEntity<?> changeCategory(CategoryDTO categoryDTO, Long id);
+    ResponseEntity<?> getCategory(Long id);
+    ResponseEntity<?> getAllCategories();
 }

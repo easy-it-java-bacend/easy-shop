@@ -11,10 +11,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LoginController {
 
-    private final UserService userService;
-
-    @PostMapping("/login")
-    public void login(@RequestBody AuthenticationRequest authenticationRequest) {
-        userService.login(authenticationRequest);
-    }
 }

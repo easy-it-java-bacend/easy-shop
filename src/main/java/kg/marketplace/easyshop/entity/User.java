@@ -57,7 +57,7 @@ public class User extends BaseEntityAudit implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
        return role.getPermissions()
                .stream()
-               .map(permission -> new SimpleGrantedAuthority(permission.name()))
+               .map(permission -> new SimpleGrantedAuthority(permission.getPermissionName()))
                .collect(Collectors.toSet());
     }
 

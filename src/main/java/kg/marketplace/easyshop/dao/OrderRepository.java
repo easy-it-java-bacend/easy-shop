@@ -33,7 +33,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Transactional
     Optional<Order> deleteOrderById(Long id);
 
-    List<Order> findAllByTotalSumLessThan(Double limit);
+    Optional<List<Order>> findAllByTotalSumLessThan(Double limit);
 //    List<Order> findAllByQuantityLessThan20AndTotalSumBetween50And500();
     Order findOrderByIdAndProductIsNull(Long id);
     Optional<Order> getOrderById(Long id);

@@ -3,59 +3,72 @@ package kg.marketplace.easyshop.service.impl;
 import kg.marketplace.easyshop.dao.ProductRepository;
 import kg.marketplace.easyshop.dto.ProductDTO;
 import kg.marketplace.easyshop.entity.Product;
-import kg.marketplace.easyshop.enums.Status;
-import kg.marketplace.easyshop.exceptions.ProductNotFoundException;
 import kg.marketplace.easyshop.mapper.ProductMapper;
 import kg.marketplace.easyshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
     @Override
-    public ProductDTO getOneById(Long id) {
-        return ProductMapper
-                .INSTANCE
-                .toDTO(
-                        productRepository.findProductByIdAndDeletedFalseAndArchivedFalse(id)
-                                .orElseThrow
-                                        (() -> new ProductNotFoundException("Product with id " + id + " not found")));
+    public ResponseEntity<?> getOneById(Long id) {
+        return productRepository
+                .findProductByIdAndDeletedFalseAndArchivedFalse(id)
+                .map(product -> ResponseEntity.status(HttpStatus.OK)
+                .body(ProductMapper.INSTANCE.toDTO(product)))
+                .orElseGet(()->{
+                    log.error("Product was not found by id" );
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                });
     }
 
     @Override
-    public List<ProductDTO> getAllProducts() {
-        return ProductMapper
-                .INSTANCE
-                .toDTOList(productRepository.findAllByDeletedFalseAndArchivedFalse()
-                        .orElseThrow(
-                                () -> new ProductNotFoundException("No any products available")));
+    public ResponseEntity<?> getAllProducts() {
+        return productRepository
+                .findAllByDeletedFalseAndArchivedFalse()
+                .map(products -> ResponseEntity.status(HttpStatus.OK)
+                .body(ProductMapper.INSTANCE.toDTOList(products)))
+                        .orElseGet(()->{
+                            log.error("Product was not found by id" );
+                            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                        });
     }
 
     @Override
-    public ResponseStatusDTO deleteOneById(Long id) {
+    public ResponseEntity<?> deleteOneById(Long id) {
         return productRepository
                 .findProductByIdAndDeletedFalseAndArchivedFalse(id)
                 .map(product -> {
                     if (product.isDeleted()) {
-                        return new ResponseStatusDTO(Status.FAIL,
-                                "Product with id = " + id + " is already deleted");
+                        return ResponseEntity.unprocessableEntity().build();
                     }
                     product.setDeleted(true);
                     productRepository.save(product);
-                    return new ResponseStatusWithObjectDTO(Status.SUCCESS, "Product with id = " + id + " is deleted", product);
-                }).orElseThrow(() -> new ProductNotFoundException("For id = " + id));
+                    return ResponseEntity.status(HttpStatus.OK).build();
+                }).orElseGet(()->{
+                    log.error("Product was not found by id" + id);
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                });
     }
 
     @Override
-    public ResponseStatusDTO addProduct(ProductDTO productDTO) {
+    public ResponseEntity<?> addProduct(ProductDTO productDTO) {
         Product product = ProductMapper.INSTANCE.toEntity(productDTO);
-        productRepository.save(product);
-        return new ResponseStatusWithObjectDTO(Status.SUCCESS, "Product is added", product);
+      return   productRepository.findByName(productDTO.getName())
+                .map(p->{
+                    log.error("Product already exists by name"+ productDTO.getName());
+                    return ResponseEntity.unprocessableEntity().build();
+                }).orElseGet(()->{
+                  productRepository.save(product);
+                return ResponseEntity.notFound().build();});
     }
 }

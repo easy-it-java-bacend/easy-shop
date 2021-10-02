@@ -3,23 +3,25 @@ package kg.marketplace.easyshop.service.impl;
 import kg.marketplace.easyshop.dao.RoleRepository;
 import kg.marketplace.easyshop.dto.*;
 import kg.marketplace.easyshop.entity.Role;
-import kg.marketplace.easyshop.enums.Status;
-import kg.marketplace.easyshop.exceptions.UserNotFoundException;
-import kg.marketplace.easyshop.exceptions.UserSaveException;
 import kg.marketplace.easyshop.dao.UserRepository;
 import kg.marketplace.easyshop.entity.User;
 import kg.marketplace.easyshop.mapper.NewUserMapper;
+import kg.marketplace.easyshop.mapper.UserMapper;
 import kg.marketplace.easyshop.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -27,15 +29,15 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public ResponseStatusDTO save(RequestNewUser requestNewUser) {
+    public ResponseEntity<?> save(RequestNewUser requestNewUser) {
         if (requestNewUser.getEmail().isEmpty()) {
-            throw new UserSaveException("Empty required email field");
+          return ResponseEntity.badRequest().body("this field must completed");
         }
-        Role role = roleRepository.findById(requestNewUser.getRoleId()).get();
+        Role role = roleRepository.findById(requestNewUser.getRoleId())
+                .orElseThrow(() -> new RuntimeException("Role not found for id=" + requestNewUser.getRoleId()));
 
         if (userRepository.existsByEmail(requestNewUser.getEmail())) {
-            return new ResponseStatusDTO(Status.FAIL,
-                    "User with email = " + requestNewUser.getEmail() + " is already exists");
+            return ResponseEntity.status(HttpStatus.IM_USED).body("For email=" + requestNewUser.getEmail());
         }
 
         User user = NewUserMapper.INSTANCE.toEntity(requestNewUser);
@@ -45,53 +47,64 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(requestNewUser.getPassword()));
 
         userRepository.save(user);
-        return new ResponseStatusWithObjectDTO<>(Status.SUCCESS, "User saved", user);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    public User getOneUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(
-                        new ResponseStatusDTO(Status.EXCEPTION,"For id : " + id)));
+    public ResponseEntity<?> getOneUserById(Long id) {
+        return userRepository.findById(id).map(user ->
+                ResponseEntity.ok().body(UserMapper.INSTANCE.toDTO(user)))
+                .orElseGet(()-> {
+                    log.error("User not found by id" + id);
+                return ResponseEntity.ok().build();
+                });
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public ResponseEntity<?> getAllUsers() {
+        return userRepository.findAllByDeletedFalseAndArchivedFalse()
+                .map(user -> ResponseEntity.ok()
+                .body(UserMapper.INSTANCE.toDTO(user)))
+                .orElseGet(()->{
+                    log.error("Users not found by id" );
+                    return ResponseEntity.ok().build();
+                });
     }
 
-    public ResponseStatusDTO deleteOneById(Long id) {
+    public ResponseEntity<?> deleteOneById(Long id) {
         return userRepository.findById(id)
                 .map(user -> {
                     if (user.isDeleted()) {
-                        return new ResponseStatusDTO(Status.FAIL,
-                                "User by id = " + id + " is already deleted");
+                        return ResponseEntity.unprocessableEntity().body("User already deleted for id=" + id);
                     }
                     user.setDeleted(true);
                     userRepository.save(user);
-                    return new ResponseStatusWithObjectDTO<>(Status.SUCCESS,
-                            "User by id = " + id + " deleted", user);
-                }).orElseThrow(() -> new UserNotFoundException(
-                        new ResponseStatusDTO(Status.EXCEPTION,"For id : " + id)));
+                    return ResponseEntity.ok().build();
+                }).orElseGet(() -> {
+                    log.error("User not found for id=" + id);
+                    return ResponseEntity.ok().build();
+                });
     }
 
-    public ResponseStatusDTO changeUserRoleById(ChangeUserRoleDTO changeUserRoleDTO) {
+    public ResponseEntity<?> changeUserRoleById(ChangeUserRoleDTO changeUserRoleDTO) {
         return userRepository.findById(changeUserRoleDTO.getId())
                 .map(user -> {
-                    Role role = user.getRole();
-                    user.setRole(changeUserRoleDTO.getRole());
+                    user.setRole(roleRepository.findById(changeUserRoleDTO.getRole()).get());
                     userRepository.save(user);
-                    return new ResponseStatusWithObjectDTO<>(Status.SUCCESS,
-                            "User role changed from " + role + " to " + changeUserRoleDTO.getRole() + " by id = " + changeUserRoleDTO.getId(), user);
-                }).orElseThrow(() ->
-                        new UserNotFoundException(
-                        new ResponseStatusDTO(
-                                Status.EXCEPTION,
-                                "For id : " + changeUserRoleDTO.getId())));
+                    return ResponseEntity.ok().build();
+                }).orElseGet(() -> {
+                    log.error("User not found for id=" + changeUserRoleDTO.getId());
+                    return ResponseEntity.ok().build();
+                });
     }
 
     @Override
-    public void login(AuthenticationRequest authenticationRequest) {
-
+    public UserDetails getOneByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseGet(()->{
+                        log.error("User not found for username="
+                                + username);
+                        return null;});
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

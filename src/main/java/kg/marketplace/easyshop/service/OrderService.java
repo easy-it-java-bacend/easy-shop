@@ -1,6 +1,7 @@
 package kg.marketplace.easyshop.service;
 import kg.marketplace.easyshop.dto.OrderDTO;
 import kg.marketplace.easyshop.enums.Status;
+import org.springframework.http.ResponseEntity;
 
 
 import java.util.List;
@@ -9,12 +10,12 @@ public interface OrderService {
 
 
 
-    Status deleteOneById(Long id);
+    ResponseEntity<?> deleteOneById(Long id);
 
 
-    ResponseStatusDTO makeOrder(OrderDTO orderDTO);
-    OrderDTO getOrderById(Long id);
-    List<OrderDTO> getOrdersLessThan(Double limit);
+    ResponseEntity<?> makeOrder(OrderDTO orderDTO);
+    ResponseEntity<?> getOrderById(Long id);
+    ResponseEntity<?> getOrdersLessThan(Double limit);
 
 
 }

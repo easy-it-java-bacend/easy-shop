@@ -1,14 +1,15 @@
 package kg.marketplace.easyshop.service;
 
 import kg.marketplace.easyshop.dto.ProductDTO;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface ProductService {
 
-    ProductDTO getOneById(Long id);
-    List<ProductDTO> getAllProducts();
-    ResponseStatusDTO deleteOneById(Long id);
+    ResponseEntity<?> getOneById(Long id);
+    ResponseEntity<?> getAllProducts();
+    ResponseEntity<?> deleteOneById(Long id);
 
-    ResponseStatusDTO addProduct(ProductDTO productDTO);
+    ResponseEntity<?> addProduct(ProductDTO productDTO);
 }
